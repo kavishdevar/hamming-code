@@ -11,10 +11,581 @@
 
 <body>
     <style>
-        html,body {
+        html,
+        body {
+            height: 100%;
             background-color: black;
         }
+
+        body {
+            margin: 0;
+            font-family: Roboto, "Helvetica Neue", sans-serif;
+        }
+
+        h1 {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        h3 {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .footnote {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1em;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+
+            a {
+                color: #ffffff;
+
+                &:visited {
+                    color: #ffffff;
+                }
+            }
+        }
+
+        .grid-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .bits-grid {
+            background-color: rgb(23 23 23);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            grid-gap: 8px;
+            padding: 16px;
+            margin: 10px;
+            border-radius: 16px;
+            box-shadow: inset 5px 7px 18px 7px #6d6d6d;
+            width: fit-content;
+            height: auto;
+        }
+
+        .bit {
+            width: 64px;
+            height: 64px;
+            background-color: rgb(42 42 42);
+            border-radius: 6px;
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+            position: relative;
+
+            p {
+                font-size: 24px;
+                text-align: center;
+                margin-top: 10px;
+                position: absolute;
+            }
+
+            input {
+                height: 62px;
+                width: 62px;
+                background: transparent;
+                border: none;
+                caret-color: white;
+                color: white;
+                font-family: Roboto, "Helvetica Neue", sans-serif;
+                font-size: 24px;
+                text-align: center;
+
+                &:focus {
+                    outline: none;
+                }
+            }
+
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            .bit-number {
+                font-size: 16px;
+                text-align: left;
+                margin-left: 5px;
+                margin-top: 5px;
+            }
+        }
+
+        .bit:not(.parity):hover {
+            background-color: rgb(69, 69, 69);
+            border-radius: 12px;
+            transform: scale(1.1);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        .parity {
+            background-color: rgb(91 91 91);
+            color: rgb(255 255 255);
+            border-radius: 6px;
+
+            input {
+                color: rgb(255, 255, 255);
+            }
+        }
+
+        button {
+            background-color: #222222;
+            color: #dfdfdf;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            margin: 8px;
+            font-size: 16px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #333333;
+            border-radius: 16px;
+            transform: scale(1.025);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 75%;
+            margin: 0 auto;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10px;
+            width: 100%;
+        }
+
+        .button-label {
+            display: inline-block;
+            margin-inline-start: 8px;
+            vertical-align: middle;
+        }
+
+        .button-icon {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .flex-break {
+            flex-basis: 100%;
+            height: 0;
+        }
+
+        #generate-button {
+            width: 100%;
+        }
+
+        .result {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        main {
+            color: #ffffff;
+            display: block;
+            margin: auto;
+            max-width: 800px;
+        }
+
+        #span1:hover {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.05);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span2:hover {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.05);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span4:hover {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.05);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span8:hover {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.05);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span0:hover {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.05);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span1:hover~.parity1 {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.05);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span2:hover~.parity2 {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.025);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span4:hover~.parity4 {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.025);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span8:hover~.parity8 {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.025);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
+
+        #span0:hover~.bit {
+            background-color: rgb(23, 23, 23);
+            border-radius: 12px;
+            box-shadow: inset #b3b3b3 0 0 6px 0px;
+            transform: scale(1.025);
+            transition: background-color 0.3s, border-radius 0.3s, transform 0.3s;
+        }
     </style>
+    <script>
+        function getValue(i) {
+            let r = (Number.isNaN(parseInt(document.getElementById(`value${i}`).value))) ? 0 : parseInt(document.getElementById(`value${i}`).value);
+            return r
+        }
+
+        function resetParityBits() {
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`value${2 ** i}`).value = "0";
+            }
+        }
+
+        function generateParityBits() {
+            document.getElementById('check-verdict').style.display = 'none';
+            document.querySelectorAll('.bit:not(.parity)').forEach((bit) => {
+                bit.style.backgroundColor = '#2a2a2a';
+            });
+            // input data in input fields with ids value1, value3, value5...7, value9...15
+            let parityBits = [];
+
+            let getValue = this.getValue;
+
+            // calculate parity bits
+            // first parity: of bits 1, 3, 5, 7, 9, 11, 13, 15 (2nd and 4th columns)
+            // second parity: of bits 2, 3, 6, 7, 10, 11, 14, 15 (3rd and 4th columns)
+            // third parity: of bits 4, 5, 6, 7, 12, 13, 14, 15 (2nd and 4th rows)
+            // fourth parity: of bits 8, 9, 10, 11, 12, 13, 14, 15 (3rd and 4th rows)
+
+            this.resetParityBits();
+
+            parityBits[0] = (getValue(1) + getValue(3) + getValue(5) + getValue(7) + getValue(9) + getValue(11) + getValue(13) + getValue(15)) % 2;
+            parityBits[1] = (getValue(2) + getValue(3) + getValue(6) + getValue(7) + getValue(10) + getValue(11) + getValue(14) + getValue(15)) % 2;
+            parityBits[2] = (getValue(4) + getValue(5) + getValue(6) + getValue(7) + getValue(12) + getValue(13) + getValue(14) + getValue(15)) % 2;
+            parityBits[3] = (getValue(8) + getValue(9) + getValue(10) + getValue(11) + getValue(12) + getValue(13) + getValue(14) + getValue(15)) % 2;
+            // display parity bits
+            for (let i = 0; i < 4; i++) {
+                if (parityBits[i] != 0) {
+                    document.getElementById(`value${2 ** i}`).value = parityBits[i].toString();
+                }
+            }
+
+            // final parity check on the whole block
+            let total = 0;
+            for (let i = 0; i < 16; i++) {
+                total += getValue(i);
+            }
+            let finalParity = (total) % 2;
+
+            if (finalParity != 0) {
+                document.getElementById('value0').value = finalParity.toString();
+            }
+
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').innerText = `${getValue(0)}`
+            for (let i = 1; i < 16; i++) {
+                document.getElementById('result').innerText = `${document.getElementById('result').innerText}${getValue(i)}`
+            }
+        }
+
+        function checkData() {
+
+            document.querySelectorAll('.bit:not(.parity)').forEach((bit) => {
+                bit.style.backgroundColor = '#2a2a2a';
+            });
+
+            let getValue = this.getValue;
+            let currentParityBits = [];
+            let error = false;
+            let errorBit = 0;
+            let finalParity = 0;
+            // calculate current parity bits
+
+            // first parity: of bits 1, 3, 5, 7, 9, 11, 13, 15 (2nd and 4th columns)
+            // second parity: of bits 2, 3, 6, 7, 10, 11, 14, 15 (3rd and 4th columns)
+            // third parity: of bits 4, 5, 6, 7, 12, 13, 14, 15 (2nd and 4th rows)
+            // fourth parity: of bits 8, 9, 10, 11, 12, 13, 14, 15 (3rd and 4th rows)
+
+            currentParityBits[0] = (getValue(1) + getValue(3) + getValue(5) + getValue(7) + getValue(9) + getValue(11) + getValue(13) + getValue(15)) % 2;
+            currentParityBits[1] = (getValue(2) + getValue(3) + getValue(6) + getValue(7) + getValue(10) + getValue(11) + getValue(14) + getValue(15)) % 2;
+            currentParityBits[2] = (getValue(4) + getValue(5) + getValue(6) + getValue(7) + getValue(12) + getValue(13) + getValue(14) + getValue(15)) % 2;
+            currentParityBits[3] = (getValue(8) + getValue(9) + getValue(10) + getValue(11) + getValue(12) + getValue(13) + getValue(14) + getValue(15)) % 2;
+            // finalParity = (getValue(0) + getValue(1) + getValue(2) + getValue(3) + getValue(4) + getValue(5) + getValue(6) + getValue(7) + getValue(8) + getValue(9) + getValue(10) + getValue(11) + getValue(12) + getValue(13) + getValue(14) + getValue(15)) % 2;
+            let errorInParities = [];
+
+            // if (finalParity != 0) {
+            //   error = true;
+            //   errorInParities.push(0);
+            // }
+            // else {
+            //   errorInParities.push(1);
+            // }
+
+            for (let i = 0; i < 4; i++) {
+                if (currentParityBits[i] != 0) {
+                    error = true;
+                    errorInParities.push(1)
+                }
+                else {
+                    errorInParities.push(0)
+                }
+            }
+
+            // assuming only 1 error, find the error bit by comparing the original parity bits with the current parity bits
+            function binaryToDecimal(binary) {
+                let decimal = 0;
+                // let bR = binary.reverse();
+                console.log(binary);
+                for (let i = 0; i < binary.length; i++) {
+                    decimal += binary[i] * 2 ** i;
+                }
+                return decimal;
+            }
+            if (error) {
+                errorBit = binaryToDecimal(errorInParities);
+                document.getElementById('check-verdict').style.display = 'block';
+                if (errorBit < 16) {
+                    document.getElementById('check-verdict').innerText = `Error detected in bit ${errorBit}`;
+                    document.getElementById(`value${errorBit}`).parentElement.style.backgroundColor = '#893232';
+                }
+                else {
+                    document.getElementById('check-verdict').innerText = `Error detected in multiple bits`;
+                }
+            }
+            else {
+                document.getElementById('check-verdict').style.display = 'block';
+                document.getElementById('check-verdict').innerText = 'No error detected';
+            }
+        }
+
+        function reset() {
+            document.getElementById('check-verdict').style.display = 'none';
+            document.querySelectorAll('input').forEach((input) => { input.value = "0" });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('input').forEach((input) => {
+                    let prevVal = "";
+                    input.addEventListener('input', function (e) {
+                        if (this.checkValidity()) {
+                            if (this.value.length > 1 && this.value[0] === '0') {
+                                this.value = this.value.slice(1);
+                            }
+                            else if (this.value.length > 1 && this.value.endsWith('1')) {
+                                this.value = "1"
+                            }
+                            input.parentElement.style.backgroundColor = '#2a2a2a';
+                            prevVal = this.value;
+                        } else {
+                            this.value = prevVal;
+                        }
+                    })
+                });
+            }
+            );
+        });
+
+        class MatIcon extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: inline-block;
+              font-family: 'Material Symbols Outlined';
+              font-size: 24px;
+              font-style: normal;
+              font-weight: normal;
+              line-height: 1;
+              letter-spacing: normal;
+              text-rendering: optimizeLegibility;
+              text-transform: none;
+              white-space: nowrap;
+              word-wrap: normal;
+            }
+          </style>
+          <slot></slot>
+        `;
+            }
+        }
+
+        customElements.define('mat-icon', MatIcon);
+    </script>
+
+    <main>
+        <h1>
+            Hamming Code Visualizer
+        </h1>
+
+        <h3>
+            Hover on the parity bits to see which bits affect it!
+        </h3>
+
+        <div class="grid-container">
+            <div class="bits-grid">
+                <span class="bit parity" id="span0">
+                    <p class="bit-number">0</p>
+                    <input disabled class="bit-value" id="value0" value="0">
+                </span>
+                <span class="bit parity" id="span1">
+                    <p class="bit-number">1</p>
+                    <input disabled class="bit-value" id="value1" value="0">
+                </span>
+                <span class="bit parity parity2" id="span2">
+                    <p class="bit-number">2</p>
+                    <input disabled class="bit-value" id="value2" value="0">
+                </span>
+                <span class="bit parity1 parity2" id="span3">
+                    <p class="bit-number">3</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value3">
+                </span>
+                <span class="bit parity parity4" id="span4">
+                    <p class="bit-number">4</p>
+                    <input disabled class="bit-value" id="value4" value="0">
+                </span>
+                <span class="bit parity1 parity4" id="span5">
+                    <p class="bit-number">5</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value5">
+                </span>
+                <span class="bit parity2 parity4" id="span6">
+                    <p class="bit-number">6</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value6">
+                </span>
+                <span class="bit parity1 parity2 parity4" id="span7">
+                    <p class="bit-number">7</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value7">
+                </span>
+                <span class="bit parity parity8" id="span8">
+                    <p class="bit-number">8</p>
+                    <input disabled class="bit-value" id="value8" value="0">
+                </span>
+                <span class="bit parity1 parity8" id="span9">
+                    <p class="bit-number">9</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value9">
+                </span>
+                <span class="bit parity2 parity8" id="span10">
+                    <p class="bit-number">10</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value10">
+                </span>
+                <span class="bit parity1 parity2 parity8" id="span11">
+                    <p class="bit-number">11</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value11">
+                </span>
+                <span class="bit parity4 parity8" id="span12">
+                    <p class="bit-number">12</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value12">
+                </span>
+                <span class="bit parity1 parity4 parity8" id="span13">
+                    <p class="bit-number">13</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value13">
+                </span>
+                <span class="bit parity2 parity4 parity8" id="span14">
+                    <p class="bit-number">14</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value14">
+                </span>
+                <span class="bit parity1 parity2 parity4 parity8" id="span15">
+                    <p class="bit-number">15</p>
+                    <input type="number" value="0" min="0" max="1" autocomplete="off" class="bit-value" id="value15">
+                </span>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="flex-break"></div>
+            <span id="result"></span>
+            <div class="flex-break"></div>
+            <span id="check-verdict"></span>
+        </div>
+
+        <div class="flex">
+            <button id="generate-button" (click)="generateParityBits()">
+                <mat-icon class="button-icon">autorenew</mat-icon>
+                <label class="button-label">Generate</label>
+            </button>
+            <div class="flex-break"></div>
+            <!-- <span id="steps">
+          <h2>Steps to store 11 bits using Extended Hamming Code:</h2>
+          <ol>
+            <li>Store the data in the bits whose position is not a power of 2 (i.e. bits 1, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14).</li>
+            <li>Calculate the parity of the bits </li>
+          </ol>
+        </span> -->
+            <div class="flex-break"></div>
+            <div class="button-grid">
+                <button (click)="checkData()">
+                    <mat-icon class="button-icon">check</mat-icon>
+                    <label class="button-label">Check</label>
+                </button>
+                <button (click)="reset()">
+                    <mat-icon class="button-icon">restart_alt</mat-icon>
+                    <label class="button-label">Reset</label>
+                </button>
+            </div>
+        </div>
+
+        <p class="footnote">
+            © 2024 - Kavish Devar
+            <br>
+            Made with the help of these 2 videos by the great Grant Sanderson (3Blue1Brown).
+            <br>
+            <a href="https://www.youtube.com/watch?v=X8jsijhllIA">Hamming Codes Part 1</a>
+            |
+            <a href="https://www.youtube.com/watch?v=b3NxrZOu_CE">Hamming Codes Part 2</a>
+        </p>
+    </main>
 </body>
 
 </html>
